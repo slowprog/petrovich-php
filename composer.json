@@ -2,7 +2,7 @@
     "name": "topface/petrovich-php",
     "type": "library",
     "description": "An easy-to-use PHP Class to decline russian names.",
-    "keywords": ["russian names", "petrovich"],
+    "keywords": ["russian names declension", "petrovich"],
     "homepage": "https://github.com/Topface/petrovich-php",
     "license": "MIT",
     "authors": [
