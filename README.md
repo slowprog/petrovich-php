@@ -1,6 +1,6 @@
 ![Petrovich](https://raw.github.com/rocsci/petrovich/master/petrovich.png)
 
-Склонение падежей русских имён, фамилий и отчеств. Портированная версия с [Ruby](https://github.com/petrovich/petrovich-ruby) на PHP.
+Склонение падежей русских имён, фамилий и отчеств. Портированная версия с [Ruby](https://github.com/petrovich/petrovich-ruby) на PHP плюс некоторый дополнительный функционал.
 
 Лицензия MIT.
 
@@ -14,33 +14,36 @@
 }
 ```
 
-## Обновление правил
-
-Если в [основные правила](https://github.com/petrovich/petrovich-php) были внесены изменения, то сюда их придётся подтянуть вручную:
-
-```bash
-git clone https://github.com/petrovich/petrovich-php.git rules
-```
-
-После этого удалить внутри *.git* и *.travis*.
-
-### Использование класса
+## Использование класса
 
 ```php
 require __DIR__.'./vendor/autoload.php';
 
-$petrovich = new Petrovich(Petrovich::GENDER_MALE);
+$petrovich = new Petrovich();
 
-$firstname = "Александр";
+$firstname  = "Александр";
 $middlename = "Сергеевич";
-$lastname = "Пушкин";
+$lastname   = "Пушкин";
+$fullName   = 'Васильков Генадий Павлович';
 
 echo $petrovich->detectGender("Петровна");	// Petrovich::GENDER_FEMALE (см. пункт Пол)
 
-echo '<br /><strong>Родительный падеж:</strong><br />';
-echo $petrovich->firstname($firstname, Petrovich::CASE_GENITIVE).'<br />'; //	Александра
-echo $petrovich->middlename($middlename, Petrovich::CASE_GENITIVE).'<br />'; //	Сергеевича
-echo $petrovich->lastname($lastname, Petrovich::CASE_GENITIVE).'<br />'; //		Пушкина
+echo $petrovich->firstname($firstname, Petrovich::CASE_GENITIVE, Petrovich::GENDER_MALE); // Александра
+
+echo $petrovich->middlename($middlename, Petrovich::CASE_GENITIVE, Petrovich::GENDER_MALE); // Сергеевича
+
+echo $petrovich->lastname($lastname, Petrovich::CASE_GENITIVE, Petrovich::GENDER_MALE); // Пушкина
+
+echo $mihalich->initial($fullName); // Васильков Г. П.
+
+echo $mihalich->inflectFullName($fullName, Petrovich::CASE_GENITIVE); // Василькова Генадия Павловича
+
+echo $mihalich->initial(
+    $mihalich->inflectFullName(
+        $fullName, 
+        Petrovich::CASE_GENITIVE
+    )
+); // Василькова Г. П.
 ```
 
 ## Падежи
@@ -57,8 +60,19 @@ echo $petrovich->lastname($lastname, Petrovich::CASE_GENITIVE).'<br />'; //		П�
 | CASE_PREPOSITIONAL  | предложный   | О ком? О чём?          |
 
 ## Пол
+
 Метод ```Petrovich::detectGender``` возвращает пол, на основе отчества. Возвращаемое значение не зависит от пола, переданного в конструктор.
 Для полов определены следующие константы
 * GENDER_ANDROGYNOUS - пол не определен;
 * GENDER_MALE - мужской пол;
 * GENDER_FEMALE - женский пол.
+
+## Обновление правил
+
+Если в [основные правила](https://github.com/petrovich/petrovich-php) были внесены изменения, то сюда их придётся подтянуть вручную:
+
+```bash
+git clone https://github.com/petrovich/petrovich-php.git rules
+```
+
+После этого удалить внутри *.git* и *.travis*.
