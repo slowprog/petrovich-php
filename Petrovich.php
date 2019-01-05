@@ -15,20 +15,15 @@ class Petrovich
     const GENDER_MALE        = 1; // Мужской.
     const GENDER_FEMALE      = 2; // Женский.
 
-    private $gender = Petrovich::GENDER_ANDROGYNOUS;
-
     /**
      * Конструтор класса Петрович загружаем правила из файла rules.json.
      *
-     * @param int    $gender
      * @param string $rules_dir
      *
      * @throws Exception
      */
-    function __construct(
-        $gender = Petrovich::GENDER_ANDROGYNOUS,
-        $rules_dir = __DIR__
-    ) {
+    function __construct($rules_dir = __DIR__)
+    {
 
         $rules_path     = $rules_dir . '/rules/rules.json';
         $rules_resourse = fopen($rules_path, 'r');
@@ -41,10 +36,6 @@ class Petrovich
         fclose($rules_resourse);
 
         $this->rules = get_object_vars(json_decode($rules_array));
-
-        if (isset($gender) && $gender != Petrovich::GENDER_ANDROGYNOUS) {
-            $this->gender = $gender;
-        }
     }
 
     /**
@@ -65,21 +56,26 @@ class Petrovich
         switch (mb_substr(mb_strtolower($middlename), -4)) {
             case 'оглы':
                 return Petrovich::GENDER_MALE;
+
                 break;
             case 'кызы':
                 return Petrovich::GENDER_FEMALE;
+
                 break;
         }
 
         switch (mb_substr(mb_strtolower($middlename), -2)) {
             case 'ич':
                 return Petrovich::GENDER_MALE;
+
                 break;
             case 'на':
                 return Petrovich::GENDER_FEMALE;
+
                 break;
             default:
                 return Petrovich::GENDER_ANDROGYNOUS;
+
                 break;
         }
     }
@@ -87,14 +83,15 @@ class Petrovich
     /**
      * Задаём имя и слоняем его.
      *
-     * @param $firstname
-     * @param $case
+     * @param string $firstname
+     * @param int    $case
+     * @param int    $gender
      *
      * @return bool|string
      *
      * @throws Exception
      */
-    public function firstname($firstname, $case = Petrovich::CASE_NOMENATIVE)
+    public function firstname($firstname, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
     {
         if (empty($firstname)) {
             throw new Exception('Firstname cannot be empty.');
@@ -104,20 +101,21 @@ class Petrovich
             return $firstname;
         }
 
-        return $this->inflect($firstname, $case, __FUNCTION__);
+        return $this->inflect($firstname, $case, __FUNCTION__, $gender);
     }
 
     /**
      * Задём отчество и склоняем его.
      *
-     * @param $middlename
-     * @param $case
+     * @param string $middlename
+     * @param int    $case
+     * @param int    $gender
      *
      * @return bool|string
      *
      * @throws Exception
      */
-    public function middlename($middlename, $case = Petrovich::CASE_NOMENATIVE)
+    public function middlename($middlename, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
     {
         if (empty($middlename)) {
             throw new Exception('Middlename cannot be empty.');
@@ -127,20 +125,21 @@ class Petrovich
             return $middlename;
         }
 
-        return $this->inflect($middlename, $case, __FUNCTION__);
+        return $this->inflect($middlename, $case, __FUNCTION__, $gender);
     }
 
     /**
      * Задаём фамилию и слоняем её.
      *
-     * @param $lastname
-     * @param $case
+     * @param string $lastname
+     * @param int    $case
+     * @param int    $gender
      *
      * @return bool|string
      *
      * @throws Exception
      */
-    public function lastname($lastname, $case = Petrovich::CASE_NOMENATIVE)
+    public function lastname($lastname, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
     {
         if (empty($lastname)) {
             throw new Exception('Lastname cannot be empty.');
@@ -150,48 +149,50 @@ class Petrovich
             return $lastname;
         }
 
-        return $this->inflect($lastname, $case, __FUNCTION__);
+        return $this->inflect($lastname, $case, __FUNCTION__, $gender);
     }
 
     /**
      * Функция проверяет заданное имя,фамилию или отчество на исключение
      * и склоняет.
      *
-     * @param $name
-     * @param $case
-     * @param $type
+     * @param string $name
+     * @param int    $case
+     * @param string $type
+     * @param int    $gender
      *
      * @return bool|string
      */
-    private function inflect($name, $case, $type)
+    private function inflect($name, $case, $type, $gender = self::GENDER_ANDROGYNOUS)
     {
         $names_arr = explode('-', $name);
         $result    = array();
 
         foreach ($names_arr as $arr_name) {
-            if (($exception = $this->checkException($arr_name, $case, $type))
-                !== false) {
+            if (($exception = $this->checkException($arr_name, $case, $type, $gender)) !== false) {
                 $result[] = $exception;
             } else {
-                $result[] = $this->findInRules($arr_name, $case, $type);
+                $result[] = $this->findInRules($arr_name, $case, $type, $gender);
             }
         }
+
         return implode('-', $result);
     }
 
     /**
      * Поиск в массиве правил.
      *
-     * @param $name
-     * @param $case
-     * @param $type
+     * @param string $name
+     * @param int    $case
+     * @param string $type
+     * @param int    $gender
      *
      * @return string
      */
-    private function findInRules($name, $case, $type)
+    private function findInRules($name, $case, $type, $gender = self::GENDER_ANDROGYNOUS)
     {
         foreach ($this->rules[$type]->suffixes as $rule) {
-            if (!$this->checkGender($rule->gender)) {
+            if (!$this->checkGender($rule->gender, $gender)) {
                 continue;
             }
             foreach ($rule->test as $last_char) {
@@ -200,27 +201,31 @@ class Petrovich
                     mb_strlen($name) - mb_strlen($last_char),
                     mb_strlen($last_char)
                 );
+
                 if ($last_char == $last_name_char) {
                     if ($rule->mods[$case] == '.') {
                         return $name;
                     }
+
                     return $this->applyRule($rule->mods, $name, $case);
                 }
             }
         }
+
         return $name;
     }
 
     /**
      * Проверка на совпадение в исключениях.
      *
-     * @param $name
-     * @param $case
-     * @param $type
+     * @param string $name
+     * @param int    $case
+     * @param string $type
+     * @param int    $gender
      *
      * @return bool|string
      */
-    private function checkException($name, $case, $type)
+    private function checkException($name, $case, $type, $gender = self::GENDER_ANDROGYNOUS)
     {
         if (!isset($this->rules[$type]->exceptions)) {
             return false;
@@ -229,16 +234,19 @@ class Petrovich
         $lower_name = mb_strtolower($name);
 
         foreach ($this->rules[$type]->exceptions as $rule) {
-            if (!$this->checkGender($rule->gender)) {
+            if (!$this->checkGender($rule->gender, $gender)) {
                 continue;
             }
+
             if (array_search($lower_name, $rule->test) !== false) {
                 if ($rule->mods[$case] == '.') {
                     return $name;
                 }
+
                 return $this->applyRule($rule->mods, $name, $case);
             }
         }
+
         return false;
     }
 
@@ -258,7 +266,9 @@ class Petrovich
             0,
             mb_strlen($name) - mb_substr_count($mods[$case], '-')
         );
+        
         $result .= str_replace('-', '', $mods[$case]);
+
         return $result;
     }
 
@@ -290,13 +300,14 @@ class Petrovich
     /**
      * Проверяет переданный пол на соответствие установленному.
      *
-     * @param string
+     * @param string $ruleGender
+     * @param string $inputGender
      *
      * @return bool
      */
-    private function checkGender($gender)
+    private function checkGender($ruleGender, $inputGender)
     {
-        return $this->gender === $this->getGender($gender)
-            || $this->getGender($gender) === Petrovich::GENDER_ANDROGYNOUS;
+        return $inputGender === $this->getGender($ruleGender)
+            || $this->getGender($ruleGender) === self::GENDER_ANDROGYNOUS;
     }
 }
