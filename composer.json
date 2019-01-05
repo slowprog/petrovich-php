@@ -11,6 +11,6 @@
         "ext-json" : "*"
     },
     "autoload": {
-        "files": ["Petrovich.php"]
+        "files": ["src/Petrovich.php"]
     }
 }
