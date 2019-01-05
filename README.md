@@ -1,42 +1,33 @@
 ![Petrovich](https://raw.github.com/rocsci/petrovich/master/petrovich.png)
 
-Склонение падежей русских имён, фамилий и отчеств.
+Склонение падежей русских имён, фамилий и отчеств. Портированная версия с [Ruby](https://github.com/petrovich/petrovich-ruby) на PHP.
 
-Портированная версия с [Ruby](https://github.com/petrovich/petrovich-ruby) на PHP
+Лицензия MIT.
 
-Лицензия MIT
+## Установка
 
-## Пример
-
-https://github.com/parshikov/petrovich-php-example
-
-##Установка
-
-Для работы требуется PHP >= 5.3
-
-Загрузите файлы в папку с библиотеками на сервере.
-
-```bash
-cd lib
-git clone https://github.com/petrovich/petrovich-php.git petrovich-php
+```json
+{
+    "require":{
+        "slowprog/petrovich-php": "^1.0"
+    }
+}
 ```
 
-если вы хотите использовать ```petrovich``` как submodule,
+## Обновление правил
+
+Если в [основные правила](https://github.com/petrovich/petrovich-php) были внесены изменения, то сюда их придётся подтянуть вручную:
 
 ```bash
-git submodule add --init https://github.com/petrovich/petrovich-php.git lib/petrovich-php
+git clone https://github.com/petrovich/petrovich-php.git rules
 ```
 
-или просто скачайте исходный код со страницы проекта на Github.
-
-##Использование
-
-В библиотеку входит класс ```Petrovich``` и trait ```Trait_Petrovich```
+После этого удалить внутри *.git* и *.travis*.
 
 ### Использование класса
 
 ```php
-require_once('path-to-lib/petrovich-php/Petrovich.php');
+require __DIR__.'./vendor/autoload.php';
 
 $petrovich = new Petrovich(Petrovich::GENDER_MALE);
 
@@ -52,39 +43,8 @@ echo $petrovich->middlename($middlename, Petrovich::CASE_GENITIVE).'<br />'; //	
 echo $petrovich->lastname($lastname, Petrovich::CASE_GENITIVE).'<br />'; //		Пушкина
 ```
 
-### Использование trait'а
-
-Trait содержит в себе
-* Свойства
-  * ```firstname```
-  * ```middlename```
-  * ```lastname```
-  * ```gender```
-* Методы
-  * ```firstname($case)```
-  * ```middlename($case)```
-  * ```lastname($case)```
-
-```php
-require_once('path-to-lib/petrovich-php/Petrovich.php');
-require_once('path-to-lib/petrovich-php/Trait/Petrovich.php');
-	
-class User {
-	use Trait_Petrovich;
-}
-
-$user = new User();
-
-$user->lastname = "Пушкин";
-$user->firstname = "Александр";
-$user->middlename = "Сергеевич";
-
-$user->firstname(Petrovich::CASE_GENITIVE);	// Пушкина
-$user->lastname(Petrovich::CASE_GENITIVE);	// Александра
-$user->middlename(Petrovich::CASE_GENITIVE);	// Сергеевича
-```
-
 ## Падежи
+
 Названия суффиксов для методов образованы от английских названий соответствующих падежей. Полный список поддерживаемых падежей приведён в таблице ниже.
 
 | Суффикс метода | Падеж        | Характеризующий вопрос |
