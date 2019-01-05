@@ -26,7 +26,7 @@ $middlename = "Сергеевич";
 $lastname   = "Пушкин";
 $fullName   = 'Васильков Генадий Павлович';
 
-echo $petrovich->detectGender("Петровна");	// Petrovich::GENDER_FEMALE (см. пункт Пол)
+echo $petrovich->detectGender("Петровна"); // Petrovich::GENDER_FEMALE (см. пункт Пол)
 
 echo $petrovich->firstname($firstname, Petrovich::CASE_GENITIVE, Petrovich::GENDER_MALE); // Александра
 
