@@ -53,7 +53,7 @@ class Petrovich
             throw new Exception('Middlename cannot be empty.');
         }
 
-        switch (mb_substr(mb_strtolower($middlename), -4)) {
+        switch (mb_substr(mb_strtolower($middlename, 'utf-8'), -4, null, 'utf-8')) {
             case 'оглы':
                 return Petrovich::GENDER_MALE;
 
@@ -64,7 +64,7 @@ class Petrovich
                 break;
         }
 
-        switch (mb_substr(mb_strtolower($middlename), -2)) {
+        switch (mb_substr(mb_strtolower($middlename, 'utf-8'), -2, null, 'utf-8')) {
             case 'ич':
                 return Petrovich::GENDER_MALE;
 
@@ -198,8 +198,9 @@ class Petrovich
             foreach ($rule->test as $last_char) {
                 $last_name_char = mb_substr(
                     $name,
-                    mb_strlen($name) - mb_strlen($last_char),
-                    mb_strlen($last_char)
+                    mb_strlen($name, 'utf-8') - mb_strlen($last_char, 'utf-8'),
+                    mb_strlen($last_char, 'utf-8'),
+                    'utf-8'
                 );
 
                 if ($last_char == $last_name_char) {
@@ -231,7 +232,7 @@ class Petrovich
             return false;
         }
 
-        $lower_name = mb_strtolower($name);
+        $lower_name = mb_strtolower($name, 'utf8');
 
         foreach ($this->rules[$type]->exceptions as $rule) {
             if (!$this->checkGender($rule->gender, $gender)) {
@@ -264,9 +265,10 @@ class Petrovich
         $result = mb_substr(
             $name,
             0,
-            mb_strlen($name) - mb_substr_count($mods[$case], '-')
+            mb_strlen($name, 'utf-8') - mb_substr_count($mods[$case], '-', 'utf-8'),
+            'utf-8'
         );
-        
+
         $result .= str_replace('-', '', $mods[$case]);
 
         return $result;
