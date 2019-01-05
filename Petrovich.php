@@ -49,6 +49,12 @@ class Petrovich {
         if(empty($middlename))
             throw new Exception('Middlename cannot be empty.');
 
+        switch ( mb_substr( mb_strtolower($middlename) , -4))
+        {
+            case 'оглы': return Petrovich::GENDER_MALE; break;
+            case 'кызы': return Petrovich::GENDER_FEMALE; break;
+        }
+
         switch ( mb_substr( mb_strtolower($middlename) , -2))
         {
             case 'ич': return Petrovich::GENDER_MALE; break;
