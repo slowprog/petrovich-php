@@ -1,15 +1,10 @@
 {
-    "name": "topface/petrovich-php",
+    "name": "slowprog/petrovich-php",
     "type": "library",
     "description": "An easy-to-use PHP Class to decline russian names.",
-    "keywords": ["russian names declension", "petrovich"],
-    "homepage": "https://github.com/Topface/petrovich-php",
+    "keywords": ["russian", "declension", "petrovich"],
+    "homepage": "https://github.com/slowprog/petrovich-php",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Grigory Parshikov MikeBazhenov"
-        }
-    ],
     "require": {
         "php": ">=5.3"
     },
