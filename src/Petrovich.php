@@ -2,8 +2,6 @@
 
 class Petrovich
 {
-    private $rules;
-
     const CASE_NOMENATIVE    = -1; // Именительный падеж.
     const CASE_GENITIVE      = 0;  // Родительный падеж.
     const CASE_DATIVE        = 1;  // Дательный падеж.
@@ -16,26 +14,31 @@ class Petrovich
     const GENDER_FEMALE      = 2; // Женский.
 
     /**
+     * @var array
+     */
+    private $rules;
+
+    /**
      * Конструтор класса Петрович загружаем правила из файла rules.json.
      *
-     * @param string $rules_dir
+     * @param string $rulesDir
      *
      * @throws Exception
      */
-    function __construct($rules_dir = __DIR__)
+    public function __construct($rulesDir = __DIR__)
     {
+        $rulesPath     = $rulesDir . '/rules/rules.json';
+        $rulesResource = fopen($rulesPath, 'r');
 
-        $rules_path     = $rules_dir . '/rules/rules.json';
-        $rules_resourse = fopen($rules_path, 'r');
-
-        if ($rules_resourse == false) {
+        if ($rulesResource == false) {
             throw new Exception('Rules file not found.');
         }
 
-        $rules_array = fread($rules_resourse, filesize($rules_path));
-        fclose($rules_resourse);
+        $rulesArray = fread($rulesResource, filesize($rulesPath));
 
-        $this->rules = get_object_vars(json_decode($rules_array));
+        fclose($rulesResource);
+
+        $this->rules = get_object_vars(json_decode($rulesArray));
     }
 
     /**
@@ -91,8 +94,11 @@ class Petrovich
      *
      * @throws Exception
      */
-    public function firstname($firstname, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
-    {
+    public function firstname(
+        $firstname,
+        $case = Petrovich::CASE_NOMENATIVE,
+        $gender = self::GENDER_ANDROGYNOUS
+    ) {
         if (empty($firstname)) {
             throw new Exception('Firstname cannot be empty.');
         }
@@ -115,8 +121,11 @@ class Petrovich
      *
      * @throws Exception
      */
-    public function middlename($middlename, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
-    {
+    public function middlename(
+        $middlename,
+        $case = Petrovich::CASE_NOMENATIVE,
+        $gender = self::GENDER_ANDROGYNOUS
+    ) {
         if (empty($middlename)) {
             throw new Exception('Middlename cannot be empty.');
         }
@@ -139,8 +148,11 @@ class Petrovich
      *
      * @throws Exception
      */
-    public function lastname($lastname, $case = Petrovich::CASE_NOMENATIVE, $gender = self::GENDER_ANDROGYNOUS)
-    {
+    public function lastname(
+        $lastname,
+        $case = Petrovich::CASE_NOMENATIVE,
+        $gender = self::GENDER_ANDROGYNOUS
+    ) {
         if (empty($lastname)) {
             throw new Exception('Lastname cannot be empty.');
         }
@@ -165,14 +177,14 @@ class Petrovich
      */
     private function inflect($name, $case, $type, $gender = self::GENDER_ANDROGYNOUS)
     {
-        $names_arr = explode('-', $name);
-        $result    = array();
+        $namesArr = explode('-', $name);
+        $result   = array();
 
-        foreach ($names_arr as $arr_name) {
-            if (($exception = $this->checkException($arr_name, $case, $type, $gender)) !== false) {
+        foreach ($namesArr as $arrName) {
+            if (($exception = $this->checkException($arrName, $case, $type, $gender)) !== false) {
                 $result[] = $exception;
             } else {
-                $result[] = $this->findInRules($arr_name, $case, $type, $gender);
+                $result[] = $this->findInRules($arrName, $case, $type, $gender);
             }
         }
 
@@ -195,15 +207,16 @@ class Petrovich
             if (!$this->checkGender($rule->gender, $gender)) {
                 continue;
             }
-            foreach ($rule->test as $last_char) {
-                $last_name_char = mb_substr(
+
+            foreach ($rule->test as $lastChar) {
+                $lastNameChar = mb_substr(
                     $name,
-                    mb_strlen($name, 'utf-8') - mb_strlen($last_char, 'utf-8'),
-                    mb_strlen($last_char, 'utf-8'),
+                    mb_strlen($name, 'utf-8') - mb_strlen($lastChar, 'utf-8'),
+                    mb_strlen($lastChar, 'utf-8'),
                     'utf-8'
                 );
 
-                if ($last_char == $last_name_char) {
+                if ($lastChar == $lastNameChar) {
                     if ($rule->mods[$case] == '.') {
                         return $name;
                     }
@@ -232,14 +245,14 @@ class Petrovich
             return false;
         }
 
-        $lower_name = mb_strtolower($name, 'utf8');
+        $lowerName = mb_strtolower($name, 'utf8');
 
         foreach ($this->rules[$type]->exceptions as $rule) {
             if (!$this->checkGender($rule->gender, $gender)) {
                 continue;
             }
 
-            if (array_search($lower_name, $rule->test) !== false) {
+            if (array_search($lowerName, $rule->test) !== false) {
                 if ($rule->mods[$case] == '.') {
                     return $name;
                 }
