@@ -42,6 +42,45 @@ class Petrovich
     }
 
     /**
+     * Возвращает ФИО с инициалами.
+     *
+     * @param string $fullName Полное ФИО (именно в таком порядке).
+     *
+     * @return string
+     */
+    static public function initial($fullName)
+    {
+        $tmp = explode(' ', $fullName);
+
+        return $tmp[0]
+            . (isset($tmp[1])
+                ? ' ' . mb_substr($tmp[1], 0, 1, 'utf-8') . '.'
+                : '')
+            . (isset($tmp[2])
+                ? ' ' . mb_substr($tmp[2], 0, 1, 'utf-8') . '.'
+                : '')
+            ;
+    }
+
+    /**
+     * Разбивает ФИО на отдельные строки в массиве.
+     *
+     * @param string $fullName Полное ФИО (именно в таком порядке).
+     *
+     * @return array
+     */
+    static public function divide($fullName)
+    {
+        $tmp = explode(' ', $fullName);
+
+        return array(
+            'lastname'   => $tmp[0],
+            'firstname'  => (isset($tmp[1]) ? $tmp[1] : null),
+            'middlename' => (isset($tmp[2]) ? $tmp[2] : null),
+        );
+    }
+
+    /**
      * Определяет пол по отчеству.
      *
      * @param $middlename
@@ -189,6 +228,42 @@ class Petrovich
         }
 
         return implode('-', $result);
+    }
+
+    /**
+     * Возвращает ФИО, сконяя его в указанный падеж.
+     *
+     * @param string $fullName
+     * @param int    $case
+     *
+     * @return string
+     */
+    public function inflectFullName($fullName, $case = Petrovich::CASE_NOMENATIVE)
+    {
+        $nameDivide = self::divide($fullName);
+
+        try {
+            $nameDivide['lastname'] = $this->lastname($nameDivide['lastname'], $case);
+        } catch (Exception $e) {
+            $nameDivide['lastname'] = '';
+        }
+
+        try {
+            $nameDivide['firstname'] = $this->firstname($nameDivide['firstname'], $case);
+        } catch (Exception $e) {
+            $nameDivide['firstname'] = '';
+        }
+        try {
+            $nameDivide['middlename'] = $this->middlename($nameDivide['middlename'], $case);
+        } catch (Exception $e) {
+            $nameDivide['middlename'] = '';
+        }
+
+        return $nameDivide['lastname']
+            . ' '
+            . $nameDivide['firstname']
+            . ' '
+            . $nameDivide['middlename'];
     }
 
     /**
