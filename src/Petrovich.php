@@ -2,7 +2,7 @@
 
 class Petrovich
 {
-    const CASE_NOMENATIVE    = -1; // Именительный падеж.
+    const CASE_NOMINATIVE    = -1; // Именительный падеж.
     const CASE_GENITIVE      = 0;  // Родительный падеж.
     const CASE_DATIVE        = 1;  // Дательный падеж.
     const CASE_ACCUSATIVE    = 2;  // Винительный падеж.
