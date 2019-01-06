@@ -27,7 +27,7 @@ class Petrovich
      */
     public function __construct($rulesDir = __DIR__)
     {
-        $rulesPath     = $rulesDir . '/rules/rules.json';
+        $rulesPath     = $rulesDir . '/../rules/rules.json';
         $rulesResource = fopen($rulesPath, 'r');
 
         if ($rulesResource == false) {
