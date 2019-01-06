@@ -135,14 +135,14 @@ class Petrovich
      */
     public function firstname(
         $firstname,
-        $case = Petrovich::CASE_NOMENATIVE,
+        $case = Petrovich::CASE_NOMINATIVE,
         $gender = self::GENDER_ANDROGYNOUS
     ) {
         if (empty($firstname)) {
             throw new Exception('Firstname cannot be empty.');
         }
 
-        if ($case === Petrovich::CASE_NOMENATIVE) {
+        if ($case === Petrovich::CASE_NOMINATIVE) {
             return $firstname;
         }
 
@@ -162,14 +162,14 @@ class Petrovich
      */
     public function middlename(
         $middlename,
-        $case = Petrovich::CASE_NOMENATIVE,
+        $case = Petrovich::CASE_NOMINATIVE,
         $gender = self::GENDER_ANDROGYNOUS
     ) {
         if (empty($middlename)) {
             throw new Exception('Middlename cannot be empty.');
         }
 
-        if ($case === Petrovich::CASE_NOMENATIVE) {
+        if ($case === Petrovich::CASE_NOMINATIVE) {
             return $middlename;
         }
 
@@ -189,14 +189,14 @@ class Petrovich
      */
     public function lastname(
         $lastname,
-        $case = Petrovich::CASE_NOMENATIVE,
+        $case = Petrovich::CASE_NOMINATIVE,
         $gender = self::GENDER_ANDROGYNOUS
     ) {
         if (empty($lastname)) {
             throw new Exception('Lastname cannot be empty.');
         }
 
-        if ($case === Petrovich::CASE_NOMENATIVE) {
+        if ($case === Petrovich::CASE_NOMINATIVE) {
             return $lastname;
         }
 
@@ -238,7 +238,7 @@ class Petrovich
      *
      * @return string
      */
-    public function inflectFullName($fullName, $case = Petrovich::CASE_NOMENATIVE)
+    public function inflectFullName($fullName, $case = Petrovich::CASE_NOMINATIVE)
     {
         $nameDivide = self::divide($fullName);
 
