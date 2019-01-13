@@ -8,8 +8,9 @@
 
 ```json
 {
-    "require":{
-        "slowprog/petrovich-php": "^1.0"
+    "require": {
+        "slowprog/petrovich-php": "^1.0",
+        "cloudloyalty/petrovich-rules": "dev-master"
     }
 }
 ```
@@ -66,13 +67,3 @@ echo $mihalich->initial(
 * GENDER_ANDROGYNOUS - пол не определен;
 * GENDER_MALE - мужской пол;
 * GENDER_FEMALE - женский пол.
-
-## Обновление правил
-
-Если в [основные правила](https://github.com/petrovich/petrovich-php) были внесены изменения, то сюда их придётся подтянуть вручную:
-
-```bash
-git clone https://github.com/petrovich/petrovich-php.git rules
-```
-
-После этого удалить внутри *.git* и *.travis*.

@@ -19,15 +19,18 @@ class Petrovich
     private $rules;
 
     /**
-     * Конструтор класса Петрович загружаем правила из файла rules.json.
+     * Конструктор класса Петрович загружаем правила из файла rules.json.
      *
-     * @param string $rulesDir
+     * @param string $rulesPath
      *
      * @throws Exception
      */
-    public function __construct($rulesDir = __DIR__)
+    public function __construct($rulesPath = null)
     {
-        $rulesPath     = $rulesDir . '/../rules/rules.json';
+        if (!$rulesPath) {
+            $rulesPath = __DIR__ . '/../../../cloudloyalty/petrovich-rules/rules.json';
+        }
+
         $rulesResource = fopen($rulesPath, 'r');
 
         if ($rulesResource == false) {
