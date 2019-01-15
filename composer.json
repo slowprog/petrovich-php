@@ -8,7 +8,8 @@
     "require": {
         "php" : ">=5.3",
         "ext-mbstring" : "*",
-        "ext-json" : "*"
+        "ext-json" : "*",
+        "cloudloyalty/petrovich-rules": "dev-master"
     },
     "autoload": {
         "files": ["src/Petrovich.php"]
