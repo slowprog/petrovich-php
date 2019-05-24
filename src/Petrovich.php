@@ -251,18 +251,18 @@ class Petrovich
         }
 
         try {
-            $nameDivide['lastname'] = $this->lastname($nameDivide['lastname'], $case);
+            $nameDivide['lastname'] = $this->lastname($nameDivide['lastname'], $case, $gender);
         } catch (Exception $e) {
             $nameDivide['lastname'] = '';
         }
 
         try {
-            $nameDivide['firstname'] = $this->firstname($nameDivide['firstname'], $case);
+            $nameDivide['firstname'] = $this->firstname($nameDivide['firstname'], $case, $gender);
         } catch (Exception $e) {
             $nameDivide['firstname'] = '';
         }
         try {
-            $nameDivide['middlename'] = $this->middlename($nameDivide['middlename'], $case);
+            $nameDivide['middlename'] = $this->middlename($nameDivide['middlename'], $case, $gender);
         } catch (Exception $e) {
             $nameDivide['middlename'] = '';
         }
