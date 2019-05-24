@@ -238,12 +238,17 @@ class Petrovich
      *
      * @param string $fullName
      * @param int    $case
+     * @param int    $gender
      *
      * @return string
      */
-    public function inflectFullName($fullName, $case = Petrovich::CASE_NOMINATIVE)
+    public function inflectFullName($fullName, $case = Petrovich::CASE_NOMINATIVE, $gender = self::GENDER_ANDROGYNOUS)
     {
         $nameDivide = self::divide($fullName);
+
+        if ($nameDivide['middlename'] && $gender == self::GENDER_ANDROGYNOUS) {
+            $gender = $this->detectGender($nameDivide['middlename']);
+        }
 
         try {
             $nameDivide['lastname'] = $this->lastname($nameDivide['lastname'], $case);
