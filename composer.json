@@ -9,7 +9,7 @@
         "php" : ">=5.3",
         "ext-mbstring" : "*",
         "ext-json" : "*",
-        "cloudloyalty/petrovich-rules": "dev-master"
+        "cloudloyalty/petrovich-rules": "^1.0"
     },
     "autoload": {
         "files": ["src/Petrovich.php"]
